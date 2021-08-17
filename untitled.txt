@@ -1,0 +1,61 @@
+test_data.dropna(inplace=True)
+test_data['day_of_journey']=pd.to_datetime(test_data['Date_of_Journey'],format='%d/%m/%Y').dt.day
+test_data['month_of_journey']=pd.to_datetime(test_data['Date_of_Journey'],format='%d/%m/%Y').dt.month
+
+
+test_data.drop(columns=['Date_of_Journey'],inplace=True,axis=1)
+
+
+test_data['Departure_hour']=pd.to_datetime(test_data['Dep_Time']).dt.hour
+test_data['Departure_minute']=pd.to_datetime(test_data['Dep_Time']).dt.minute
+
+
+test_data.drop(columns=['Dep_Time'],inplace=True)
+
+test_data['arrival_hour']=pd.to_datetime(test_data['Arrival_Time']).dt.hour
+test_data['arrival_minute']=pd.to_datetime(test_data['Arrival_Time']).dt.minute
+test_data.drop(columns=['Arrival_Time'],inplace=True,axis=1)
+
+test_data.reset_index(inplace=True)
+
+duration_test=[]
+for i in range(len(test_data)):
+    r=test_data.Duration[i].split()
+    if len(r)==2:
+        duration_test.append(r)
+    else:
+        if "h" in r[0]:
+            r.append("0m")
+            duration_test.append(r)
+        else:
+            l=["0h",r[0]]
+            duration_test.append(l)
+            
+            
+            
+duration_hour_test=[duration[i][0].split(sep='h')[0] for i in range(len(duration))]     
+duration_minute_test=[duration[i][1].split(sep='m')[0] for i in range(len(duration))]   
+
+test_data.drop(columns=['Duration'],inplace=True)
+
+airline_test=test_data[['Airline']]
+airline_test=pd.get_dummies(airline,drop_first=True)
+
+source_test=test_data[['Source']]
+source_test=pd.get_dummies(source,drop_first=True)
+
+destination_test=test_data[['Destination']]
+destination_test=pd.get_dummies(destination,drop_first=True)
+
+
+test_data.drop(columns=['Additional_Info'],inplace=True)
+
+test_data.drop(columns=['Route'],inplace=True)
+
+dictionary_test={'non-stop':0,'1 stop':1,'2 stops':2,'3 stops':3,'4 stops':4}
+test_data['stops']=test_data['Total_Stops'].map(dictionary_test)
+
+test_test_data_final=pd.concat([test_data,airline,source,destination],axis=1)
+
+train_test_data_final.drop(columns=['Airline','Source','Destination'],inplace=True,axis=1)
+
