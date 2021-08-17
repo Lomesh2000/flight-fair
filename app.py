@@ -6,7 +6,7 @@ import joblib
 import pandas as pd
 
 app = Flask(__name__)
-model = joblib.load(open("random_cv_compressed2.pkl", "rb"))
+model = pickle.load(open("random_cv.pkl", "rb"))
 
 
 
